@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#3F51B5</color>
+    <color name="colorPrimaryDark">#303F9F</color>
+    <color name="colorAccent">#3fa92a</color>
+    <color name="animation">#5c1301</color>
+    <color name="social">#1f7fc7</color>
+    <color name="projects">#bc791c</color>
+    <color name="gallery">#0c454e</color>
+    <color name="contact">#ae2412</color>
+    <color name="yellow">#f4bd31</color>
+    <color name="resume">#3e7b2d</color>
+    <color name="beige">#ded8ac</color>
+
+</resources>
