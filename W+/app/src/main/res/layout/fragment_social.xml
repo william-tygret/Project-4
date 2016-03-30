@@ -3,6 +3,14 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-                android:background="#ca055029">
+                android:background="#ca1f7fc7">
+
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/instagramRecyclerView"
+        />
+
 
 </LinearLayout>
