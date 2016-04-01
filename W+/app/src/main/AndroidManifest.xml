@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest package="com.example.w"
+<manifest package="com.williamtygret.w"
           xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.INTERNET" />
@@ -13,7 +13,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity android:name="com.williamtygret.w.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
@@ -26,7 +26,7 @@
         -->
 
         <service
-            android:name="com.example.w.PlaceholderAuthenticatorService">
+            android:name="com.williamtygret.w.PlaceholderAuthenticatorService">
             <intent-filter>
                 <action android:name="android.accounts.AccountAuthenticator"/>
             </intent-filter>
@@ -37,13 +37,13 @@
 
 
         <provider
-            android:name=".ContentProvider"
-            android:authorities="com.example.w.ContentProvider"
+            android:name="com.williamtygret.w.ContentProvider"
+            android:authorities="com.williamtygret.w.ContentProvider"
             android:exported="false"
             android:syncable="true"/>
 
         <service
-            android:name=".SyncService"
+            android:name="com.williamtygret.w.SyncService"
             android:process=":sync">
             <intent-filter>
                 <action android:name="android.content.SyncAdapter"/>

@@ -1,13 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
+                xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/instaLayout"
                 android:layout_height="wrap_content">
 
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/skillsCardView"
+        android:layout_marginLeft="0dp"
+        android:layout_marginRight="0dp"
+        android:layout_marginTop="6dp"
+        android:paddingBottom="20dp"
+        app:cardBackgroundColor="@color/socialtrans"
+        app:cardElevation="3dp"
+        android:layout_below="@id/eduCardView"
+        app:cardCornerRadius="5dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
     <ImageView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/instagramImageView"
+        android:layout_marginTop="6dp"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"/>
 
@@ -16,7 +36,15 @@
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:text="Medium Text"
+        android:textColor="#FFFFFF"
         android:id="@+id/instagramTextView"
+        android:layout_margin="6dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginBottom="20dp"
         android:layout_below="@+id/instagramImageView"
-        android:layout_centerHorizontal="true"/>
+        android:layout_centerHorizontal="false"/>
+
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+
 </RelativeLayout>

@@ -1,4 +1,4 @@
-package com.example.w;
+package com.williamtygret.w;
 
 import org.junit.Test;
 
