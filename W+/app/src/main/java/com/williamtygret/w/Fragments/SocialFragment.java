@@ -1,5 +1,6 @@
 package com.williamtygret.w.Fragments;
 
+import android.content.ContentValues;
 import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
@@ -17,11 +18,20 @@ import android.view.ViewGroup;
 
 import com.williamtygret.w.ContentProvider;
 import com.williamtygret.w.DatabaseHelper;
+import com.williamtygret.w.InstagramAPIstuff.Caption;
+import com.williamtygret.w.InstagramAPIstuff.Datum;
+import com.williamtygret.w.InstagramAPIstuff.InstagramAPI;
+import com.williamtygret.w.InstagramAPIstuff.InstagramAPIResults;
 import com.williamtygret.w.InstagramData;
 import com.williamtygret.w.InstagramRecyclerAdapter;
 import com.williamtygret.w.R;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by williamtygret on 3/21/16.
@@ -33,6 +43,7 @@ public class SocialFragment extends Fragment {
     RecyclerView mInstagramRecyclerView;
     InstagramRecyclerAdapter mAdapter;
     Cursor mCursor;
+    InstagramData instagramData;
 
     @Nullable
     @Override
@@ -41,10 +52,10 @@ public class SocialFragment extends Fragment {
 
 
         mCursor = DatabaseHelper.getInstance(getContext()).getInstagram(10);
-        InstagramData instagramData = new InstagramData(mCursor);
+        instagramData = new InstagramData(mCursor);
 
 
-        getContext().getContentResolver().registerContentObserver(Uri.parse(ContentProvider.BASE_URI_STRING),true,new SocialFragment.InstagramContentObserver(new Handler()));
+        //getContext().getContentResolver().registerContentObserver(Uri.parse(ContentProvider.BASE_URI_STRING),true,new SocialFragment.InstagramContentObserver(new Handler()));
 
         mInstagramRecyclerView = (RecyclerView)view.findViewById(R.id.instagramRecyclerView);
         RecyclerView.LayoutManager manager = new LinearLayoutManager(getActivity());
@@ -67,32 +78,66 @@ public class SocialFragment extends Fragment {
 
 
 
-
-    public class InstagramContentObserver extends ContentObserver {
-
-        /**
-         * Creates a content observer.
-         *
-         * @param handler The handler to run {@link #onChange} on, or null if none.
-         */
-        public InstagramContentObserver(Handler handler) {
-            super(handler);
-        }
+    public class getSocialMedia extends AsyncTask<String,Void,String>{
 
         @Override
-        public void onChange(boolean selfChange, Uri uri) {
-            //do stuff on UI thread
-            getContext().getContentResolver().registerContentObserver(ContentProvider.INSTAGRAM_URI, true, new InstagramContentObserver(new Handler()));
+        protected String doInBackground(String... params) {
+            InstagramAPI.Factory.getInstance().getInstagram().enqueue(new Callback<InstagramAPIResults>() {
 
-            ContentProvider:
-            {
-                Log.d("ONCHANGE", "onChange: news");
-                new PullFromDbAsyncTask().execute();
-            }
+                @Override
+                public void onResponse(Call<InstagramAPIResults> call, Response<InstagramAPIResults> response) {
+                    List<Datum> results = response.body().getData();
+                    for (Datum result : results) {
+                        ContentValues values = new ContentValues();
+                        values.put(DatabaseHelper.INSTAGRAM_COL_HEADLINE, result.getCaption().getText());
+                        values.put(DatabaseHelper.INSTAGRAM_COL_LINK_URL, result.getLink());
+                        if (result.getImages().getStandardResolution()!= null) {
+                            values.put(DatabaseHelper.INSTAGRAM_COL_THUMBNAIL_URL, result.getImages().getStandardResolution().getUrl());
+                        }
+
+                    }
+                }
+
+                @Override
+                public void onFailure(Call<InstagramAPIResults> call, Throwable t) {
+                    Log.d("FAILURE", "onFailure: error using the NYT Top Stories API");
+                }
+
+            });
+            return null;
         }
 
-    }
 
+
+
+
+
+
+//    public class InstagramContentObserver extends ContentObserver {
+//
+//        /**
+//         * Creates a content observer.
+//         *
+//         * @param handler The handler to run {@link #onChange} on, or null if none.
+//         */
+//        public InstagramContentObserver(Handler handler) {
+//            super(handler);
+//        }
+//
+//        @Override
+//        public void onChange(boolean selfChange, Uri uri) {
+//            //do stuff on UI thread
+//            getContext().getContentResolver().registerContentObserver(ContentProvider.INSTAGRAM_URI, true, new InstagramContentObserver(new Handler()));
+//
+//            ContentProvider:
+//            {
+//                Log.d("ONCHANGE", "onChange: news");
+//                new PullFromDbAsyncTask().execute();
+//            }
+//        }
+//
+//    }
+//
         private class PullFromDbAsyncTask extends AsyncTask<Void,Void,InstagramData> {
 
             @Override
@@ -116,5 +161,5 @@ public class SocialFragment extends Fragment {
 
 
 
-
+}
 }

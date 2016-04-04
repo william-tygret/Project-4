@@ -3,8 +3,10 @@ package com.williamtygret.w;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.view.*;
 import android.support.v7.app.AppCompatActivity;
@@ -17,10 +19,21 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.williamtygret.w.InstagramAPIstuff.Caption;
+import com.williamtygret.w.InstagramAPIstuff.Datum;
+import com.williamtygret.w.InstagramAPIstuff.InstagramAPI;
+import com.williamtygret.w.InstagramAPIstuff.InstagramAPIResults;
+
+import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getCanonicalName();
-    public static final String AUTHORITY = "com.example.w.ContentProvider";
+    public static final String AUTHORITY = "com.williamtygret.w.ContentProvider";
 
     ViewPager mFragmentSpace;
     android.support.design.widget.FloatingActionButton fabResume;
@@ -62,15 +75,17 @@ public class MainActivity extends AppCompatActivity {
         waveAnimation.setRepeatCount(20);
         mAndroidArm.startAnimation(waveAnimation);
 
-        ContentResolver.setIsSyncable(mAccount, ContentProvider.AUTHORITY, 1);
-        ContentResolver.setSyncAutomatically(mAccount, AUTHORITY, true);
-        ContentResolver.addPeriodicSync(
-                mAccount,
-                AUTHORITY,
-                Bundle.EMPTY,
-                600);
 
-        ContentResolver.requestSync(mAccount, ContentProvider.AUTHORITY, Bundle.EMPTY);
+
+//        ContentResolver.setIsSyncable(mAccount, ContentProvider.AUTHORITY, 1);
+//        ContentResolver.setSyncAutomatically(mAccount, AUTHORITY, true);
+//        ContentResolver.addPeriodicSync(
+//                mAccount,
+//                AUTHORITY,
+//                Bundle.EMPTY,
+//                600);
+//
+//        ContentResolver.requestSync(mAccount, ContentProvider.AUTHORITY, Bundle.EMPTY);
 
 //        getContentResolver().registerContentObserver(ContentProvider.BASE_URI_STRING,true,new SocialFragment.InstagramContentObserver());
 
@@ -169,6 +184,8 @@ public class MainActivity extends AppCompatActivity {
                     mAndroidArm.startAnimation(waveAnimation);
                     //ContentResolver.requestSync(mAccount, ContentProvider.AUTHORITY, Bundle.EMPTY);
                     fabResume.clearAnimation();
+                    GetSocialMedia asyncTask = new GetSocialMedia();
+                    asyncTask.execute();
                     fabContact.clearAnimation();
                     fabProjects.clearAnimation();
                     fabGallery.clearAnimation();
@@ -238,4 +255,49 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    public class GetSocialMedia extends AsyncTask<String,Void,String> {
+
+        @Override
+        protected String doInBackground(String... params) {
+            InstagramAPI.Factory.getInstance().getInstagram().enqueue(new Callback<InstagramAPIResults>() {
+
+                @Override
+                public void onResponse(Call<InstagramAPIResults> call, Response<InstagramAPIResults> response) {
+                    List<Datum> results = response.body().getData();
+                    for (Datum result : results) {
+                        ContentValues values = new ContentValues();
+                        if (result.getCaption() == null) {
+                            Caption c = new Caption();
+                            c.setText(" ");
+                            result.setCaption(c);
+                        }
+                        Log.d("GETCAPTION", result.getCaption().getText());
+                        values.put(DatabaseHelper.INSTAGRAM_COL_HEADLINE, result.getCaption().getText());
+                        values.put(DatabaseHelper.INSTAGRAM_COL_LINK_URL, result.getLink());
+                        if (result.getImages().getStandardResolution() != null) {
+                           values.put(DatabaseHelper.INSTAGRAM_COL_THUMBNAIL_URL, result.getImages().getStandardResolution().getUrl());
+                        }
+
+                        DatabaseHelper.getInstance(MainActivity.this).addInstagram(values);
+
+                    }
+
+
+                }
+
+                @Override
+                public void onFailure(Call<InstagramAPIResults> call, Throwable t) {
+                    Log.d("FAILURE", "onFailure: error using the NYT Top Stories API");
+                }
+
+            });
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            Log.d("POSTEXECUTE","postexecute");
+        }
+    }
 }

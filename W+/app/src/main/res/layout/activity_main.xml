@@ -23,6 +23,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:id="@+id/backgroundView"
         android:background="@drawable/marble"
         android:layout_below="@id/toolBar">
 
@@ -248,7 +249,7 @@
         android:layout_height="match_parent"
         android:id="@+id/fragmentSpace"
         android:clickable="true"
-        android:layout_margin="8dp"
+        android:layout_marginTop="8dp"
         android:layout_below="@+id/linearLayout"
         android:layout_alignStart="@+id/linearLayout">
     </android.support.v4.view.ViewPager>

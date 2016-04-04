@@ -39,7 +39,7 @@ public class InstagramRecyclerAdapter extends RecyclerView.Adapter<InstagramRecy
 
 
         holder.mHeadline.setText(Html.fromHtml(sourceString));
-//        holder.mHeadline.setText("freshprincewilliam: "+item.getHeadline());
+        holder.mHeadline.setText("freshprincewilliam: "+item.getHeadline());
 
         String thumbnailUrlString = item.getThumbnailUrl();
         if (thumbnailUrlString != null && !thumbnailUrlString.isEmpty()) {

@@ -95,6 +95,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 limitString             // limit
         );
         //db.close();
+        cursor.moveToFirst();
+        while(cursor.isAfterLast()==false){
+            Log.d("GETINSTAGRAM",cursor.getString(cursor.getColumnIndex(DatabaseHelper.INSTAGRAM_COL_HEADLINE)));
+            cursor.moveToNext();
+        }
         return cursor;
     }
 

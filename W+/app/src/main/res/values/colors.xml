@@ -4,6 +4,7 @@
     <color name="colorPrimaryDark">#262626</color>
     <color name="colorAccent">#3fa92a</color>
     <color name="animation">#5c1301</color>
+    <color name="animationtrans">#ea5c1301</color>
     <color name="social">#1f7fc7</color>
     <color name="socialtrans">#c51f7fc7</color>
     <color name="projects">#bc791c</color>

@@ -12,7 +12,7 @@ import android.util.Log;
 public class ContentProvider extends android.content.ContentProvider {
     private static final String TAG = ContentProvider.class.getCanonicalName();
 
-    public static final String AUTHORITY = "com.example.w.ContentProvider";
+    public static final String AUTHORITY = "com.williamtygret.w.ContentProvider";
 
     public static final String INSTAGRAM_PATH = DatabaseHelper.INSTAGRAM_TABLE;
     public static final String BASE_URI_STRING = "content://" + AUTHORITY;

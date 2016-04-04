@@ -1,13 +1,17 @@
 package com.williamtygret.w.Fragments;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowInsets;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -16,9 +20,11 @@ import android.widget.Toast;
 
 import com.williamtygret.w.R;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
-
-import static com.williamtygret.w.R.id.aboutCardView;
 
 /**
  * Created by williamtygret on 3/21/16.
@@ -178,22 +184,35 @@ public class ResumeFragment extends Fragment {
 
 
 
-
+        mContactSendButton = (Button)view.findViewById(R.id.contactSendButton);
         mResumeEditText = (EditText)view.findViewById(R.id.contactEmailInputAddress);
+
         mContactSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+                Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.resumega);
+                String extStorageDirectory = Environment.getExternalStorageDirectory().toString();
+
+                File file = new File(extStorageDirectory, "resumega.png");
+                try {
+                    FileOutputStream outStream = new FileOutputStream(file);
+                    bm.compress(Bitmap.CompressFormat.PNG, 100, outStream);
+                    outStream.flush();
+                    outStream.close();
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
                 Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
                 emailIntent.setData(Uri.parse("mailto:" + mResumeEditText.getText().toString()));
                 emailIntent.putExtra(Intent.EXTRA_SUBJECT, "William Tygret -- Resume");
-                emailIntent.putExtra(Intent.EXTRA_TEXT, "Resume");
+                emailIntent.putExtra(Intent.EXTRA_TEXT, "Resume:   http://imgur.com/jsUDgO9");
+                emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file));
 
-                ArrayList<Uri> uris = new ArrayList<Uri>();
 
-                uris.add(Uri.parse("android.resource://" + "com.willtygret.w" + "/" + R.drawable.resumeGA));
-
-                emailIntent.putExtra(Intent.EXTRA_STREAM, uris);
 
                 try {
                     startActivity(Intent.createChooser(emailIntent, "Send email using..."));
